@@ -11,11 +11,20 @@ const App = () => {
     console.log(event.target.value)
     setNewName(event.target.value)
   }
+  const addContact = (event) =>{
+    event.preventDefault()
+    
+    const personObject = {
+      name : newName
+    }
+    setPersons(persons.concat(personObject))
+    setNewName('')
+  }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
+      <form onSubmit={addContact}>
         <div>
           name: <input value={newName} onChange = {handleInputChange}/>
         </div>
@@ -34,7 +43,7 @@ const App = () => {
 }
 
 const PersonsList  = ({persons}) =>{
-  console.log(persons)
+  //console.log(persons)
   return(
     <div>
       {persons.map((person) =>{
