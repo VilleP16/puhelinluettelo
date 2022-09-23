@@ -3,16 +3,26 @@ import { useState } from 'react'
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Lionel Messi', phone: '0407771234' },
-    { name: 'Cristiano Ronaldo', phone : '01001000' }
+    { name: 'Cristiano Ronaldo', phone : '01001000' },
+    { name: 'Rio Ferdinand', phone: '04466734' },
+    { name: 'Karim Benzema', phone: '099003394959' },
+    { name: 'David De Gea', phone: '098767656254' },
+    { name: 'David Silva', phone: '05050505050' }
   ])
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
+  const [filterResultsBy, setFilterResultsBy] = useState('')
 
   const handleInputChange = (event) => {
     setNewName(event.target.value)
   }
   const handlePhoneInputChange = (event) =>{
     setNewPhone(event.target.value)
+  }
+
+  const handleFilterChange = (event) =>{
+    setFilterResultsBy(event.target.value)
+    console.log(contactsToShow)
   }
   const addContact = (event) => {
     event.preventDefault()
@@ -29,6 +39,7 @@ const App = () => {
       setNewName('')
       setNewPhone('')
     }
+    //console.log(contactsToShow)
   }
   const tarkistaOnkoNimiListalla = () => {
     let onJoListalla = false
@@ -40,10 +51,17 @@ const App = () => {
     })
     return onJoListalla
   }
+  const contactsToShow = persons.filter(function(person){
+    return person.name.toLowerCase().includes(filterResultsBy.toLowerCase())
+  })
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>
+          Filter contact list: <input value={filterResultsBy} onChange={handleFilterChange} />
+        </div>
+        <h2>Add a new contact</h2>
       <form onSubmit={addContact}>
         <div>
           name: <input value={newName} onChange={handleInputChange} />
@@ -55,12 +73,8 @@ const App = () => {
           <button type="submit">add</button>
         </div>
       </form>
-      <PersonsList persons={persons} />
-      <h2>Numbers</h2>
-      ...
-      <div>debug: {newName}</div>
-      <div>debug: {newPhone}</div>
-
+      <h2>Contacts</h2>
+      <PersonsList persons={contactsToShow} />
     </div>
   )
 }
@@ -80,6 +94,4 @@ const Person = (props) => {
     <p>{props.name} {props.phone}</p>
   )
 }
-
-
 export default App
