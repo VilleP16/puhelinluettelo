@@ -2,28 +2,32 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Lionel Messi' },
-    { name: 'Cristiano Ronaldo' }
+    { name: 'Lionel Messi', phone: '0407771234' },
+    { name: 'Cristiano Ronaldo', phone : '01001000' }
   ])
   const [newName, setNewName] = useState('')
+  const [newPhone, setNewPhone] = useState('')
 
   const handleInputChange = (event) => {
     setNewName(event.target.value)
+  }
+  const handlePhoneInputChange = (event) =>{
+    setNewPhone(event.target.value)
   }
   const addContact = (event) => {
     event.preventDefault()
 
     if (tarkistaOnkoNimiListalla()) {
       alert(`Henkilö ${newName} on jo listalla!`)
-      setNewName('')
-
     } else {
       console.log('ei  ollut listalla')
       const personObject = {
-        name: newName
+        name: newName,
+        phone: newPhone
       }
       setPersons(persons.concat(personObject))
       setNewName('')
+      setNewPhone('')
     }
   }
   const tarkistaOnkoNimiListalla = () => {
@@ -45,6 +49,9 @@ const App = () => {
           name: <input value={newName} onChange={handleInputChange} />
         </div>
         <div>
+          phone: <input value={newPhone} onChange={handlePhoneInputChange} />
+        </div>
+        <div>
           <button type="submit">add</button>
         </div>
       </form>
@@ -52,6 +59,7 @@ const App = () => {
       <h2>Numbers</h2>
       ...
       <div>debug: {newName}</div>
+      <div>debug: {newPhone}</div>
 
     </div>
   )
@@ -62,14 +70,14 @@ const PersonsList = ({ persons }) => {
   return (
     <div>
       {persons.map((person) => {
-        return <Person name={person.name} key={person.name} />
+        return <Person name={person.name} phone = {person.phone} key={person.name} />
       })}
     </div>
   )
 }
 const Person = (props) => {
   return (
-    <p>{props.name}</p>
+    <p>{props.name} {props.phone}</p>
   )
 }
 
