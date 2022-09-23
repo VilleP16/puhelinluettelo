@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import PersonsList from './components/PersonsList'
+import FilterContactList from './components/FilterList'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -58,9 +60,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-          Filter contact list: <input value={filterResultsBy} onChange={handleFilterChange} />
-        </div>
+      <FilterContactList filterResultsBy = {filterResultsBy} handleFilterChange = {handleFilterChange}/>
         <h2>Add a new contact</h2>
       <form onSubmit={addContact}>
         <div>
@@ -79,19 +79,4 @@ const App = () => {
   )
 }
 
-const PersonsList = ({ persons }) => {
-  //console.log(persons)
-  return (
-    <div>
-      {persons.map((person) => {
-        return <Person name={person.name} phone = {person.phone} key={person.name} />
-      })}
-    </div>
-  )
-}
-const Person = (props) => {
-  return (
-    <p>{props.name} {props.phone}</p>
-  )
-}
 export default App
