@@ -1,21 +1,27 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import PersonsList from './components/PersonsList'
 import FilterContactList from './components/FilterList'
 import PersonForm from './components/PersonForm'
 
+
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Lionel Messi', phone: '0407771234' },
-    { name: 'Cristiano Ronaldo', phone : '01001000' },
-    { name: 'Rio Ferdinand', phone: '04466734' },
-    { name: 'Karim Benzema', phone: '099003394959' },
-    { name: 'David De Gea', phone: '098767656254' },
-    { name: 'David Silva', phone: '05050505050' }
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [filterResultsBy, setFilterResultsBy] = useState('')
 
+  useEffect(() =>{
+    console.log('effect')
+    axios
+    .get('http://localhost:3001/persons')
+    .then(response =>{
+      console.log('promise fulfilled')
+      setPersons(response.data)
+    })
+  }, [])
+  console.log('render', persons.length, 'persons')
+  
   const handleInputChange = (event) => {
     setNewName(event.target.value)
   }
@@ -25,7 +31,7 @@ const App = () => {
 
   const handleFilterChange = (event) =>{
     setFilterResultsBy(event.target.value)
-    console.log(contactsToShow)
+    //console.log(contactsToShow)
   }
   const addContact = (event) => {
     event.preventDefault()
