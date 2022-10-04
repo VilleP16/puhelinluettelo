@@ -11,7 +11,7 @@ const createNewContact = newObject => {
     return request.then(response => response.data)
 }
 const deleteContact = id =>{
-    const request = axios.delete(`http://localhost:3001/persons/${id}`)
+    const request = axios.delete(baseUrl + id)
     return request.then(response => response.data)
 }
 
