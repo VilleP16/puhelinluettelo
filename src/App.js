@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import PersonsList from './components/PersonsList'
 import FilterContactList from './components/FilterList'
 import PersonForm from './components/PersonForm'
+import databaseFunctions from './DatabaseServices.js/dbServices'
 
 
 const App = () => {
@@ -13,11 +13,14 @@ const App = () => {
 
   useEffect(() =>{
     console.log('effect')
-    axios
-    .get('http://localhost:3001/persons')
-    .then(response =>{
-      console.log('promise fulfilled')
-      setPersons(response.data)
+    databaseFunctions
+    .getAll()
+    .then(contactList =>{
+      console.log('promise fulfilled', contactList)
+      setPersons(contactList)
+    })
+    .catch(error =>{
+      alert("Server connecting error. Please try again later!")
     })
   }, [])
   console.log('render', persons.length, 'persons')
@@ -31,7 +34,6 @@ const App = () => {
 
   const handleFilterChange = (event) =>{
     setFilterResultsBy(event.target.value)
-    //console.log(contactsToShow)
   }
   const addContact = (event) => {
     event.preventDefault()
@@ -40,15 +42,22 @@ const App = () => {
       alert(`Henkilö ${newName} on jo listalla!`)
     } else {
       console.log('ei  ollut listalla')
-      const personObject = {
+      const newContactObject = {
         name: newName,
         phone: newPhone
       }
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewPhone('')
+      databaseFunctions
+      .createNewContact(newContactObject)
+      .then(newContact => {
+        console.log(newContact)
+        setPersons(persons.concat(newContact))
+        setNewName("")
+        setNewPhone("")
+      })
+      .catch(error =>{
+        alert("Could not add new contact. Please try again later!")
+      })
     }
-    //console.log(contactsToShow)
   }
   const tarkistaOnkoNimiListalla = () => {
     let onJoListalla = false
@@ -63,6 +72,19 @@ const App = () => {
   const contactsToShow = persons.filter(function(person){
     return person.name.toLowerCase().includes(filterResultsBy.toLowerCase())
   })
+  const deleteContact = props => () =>{
+    console.log('delete contact', props.id)
+    if(window.confirm(`Delete ${props.name}?`)){
+      databaseFunctions
+    .deleteContact(props.id)
+    .then(response =>{
+      setPersons(persons.filter(person => person.id !== props.id))
+      alert("Contact deleted succesfully!")
+    })
+    .catch("Something went wrong when deleting the contact. Try again later!")
+    }
+    
+  }
 
   return (
     <div>
@@ -72,7 +94,7 @@ const App = () => {
         <PersonForm addContact = {addContact} newName = {newName} handleInputChange = {handleInputChange} newPhone = {newPhone} handlePhoneInputChange = {handlePhoneInputChange}/>
       
       <h2>Contacts</h2>
-      <PersonsList persons={contactsToShow} />
+      <PersonsList persons={contactsToShow} handleClick = {deleteContact}/>
     </div>
   )
 }

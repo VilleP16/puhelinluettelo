@@ -1,16 +1,20 @@
-const PersonsList = ({ persons }) => {
+const PersonsList = ({ persons, handleClick }) => {
     //console.log(persons)
     return (
       <div>
         {persons.map((person) => {
-          return <Person name={person.name} phone = {person.phone} key={person.name} />
+          return <Person handleClick = {handleClick} name={person.name} phone = {person.phone} key={person.name} id={person.id} />
         })}
       </div>
     )
   }
   const Person = (props) => {
+    console.log('Person props', props)
     return (
-      <p>{props.name} {props.phone}</p>
+      <div>
+    {props.name} {props.phone} &nbsp;
+      <button onClick={props.handleClick(props)}>Delete</button>
+      </div>
     )
   }
   export default PersonsList
