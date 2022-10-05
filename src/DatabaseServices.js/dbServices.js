@@ -14,11 +14,15 @@ const deleteContact = id =>{
     const request = axios.delete(baseUrl + id)
     return request.then(response => response.data)
 }
-
+const updateContact = (id, newObject) =>{
+    const request = axios.put(baseUrl + id, newObject)
+    return request.then(response => response.data)
+}
 const databaseFunctions = {
     getAll, 
     createNewContact,
-    deleteContact
+    deleteContact, 
+    updateContact
 }
 
 export default databaseFunctions

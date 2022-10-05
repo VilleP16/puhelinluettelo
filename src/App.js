@@ -38,10 +38,22 @@ const App = () => {
   const addContact = (event) => {
     event.preventDefault()
 
-    if (tarkistaOnkoNimiListalla()) {
-      alert(`Henkilö ${newName} on jo listalla!`)
+    if (checkContactsId() !== 0 ) {
+      if(window.confirm("Contact found. Do you want to replace the phone number?")){
+        const contactToUpdate = persons.find(person => person.id === checkContactsId())
+        const updatedContactObject = { ...contactToUpdate, phone: newPhone}
+        databaseFunctions
+        .updateContact(contactToUpdate.id, updatedContactObject)
+        .then(response =>{
+          setPersons(persons.map(person => person.id !== contactToUpdate.id ? person : response))
+          setNewName("")
+          setNewPhone("")
+          alert("Contact updated succesfully!")
+        })
+        
+      }
     } else {
-      console.log('ei  ollut listalla')
+      console.log('ei  ollut listalla', checkContactsId())
       const newContactObject = {
         name: newName,
         phone: newPhone
@@ -59,15 +71,16 @@ const App = () => {
       })
     }
   }
-  const tarkistaOnkoNimiListalla = () => {
-    let onJoListalla = false
+  const checkContactsId = () => {
+    let personId = 0
+    //send id back as 0 if contact not found, otherwise id = contacts id
     persons.map((person) => {
       if (newName === person.name) {
-        return onJoListalla = true
+        personId = person.id
       }
-      return null
+      return personId
     })
-    return onJoListalla
+    return personId
   }
   const contactsToShow = persons.filter(function(person){
     return person.name.toLowerCase().includes(filterResultsBy.toLowerCase())

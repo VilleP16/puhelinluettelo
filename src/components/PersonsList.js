@@ -9,7 +9,6 @@ const PersonsList = ({ persons, handleClick }) => {
     )
   }
   const Person = (props) => {
-    console.log('Person props', props)
     return (
       <div>
     {props.name} {props.phone} &nbsp;
