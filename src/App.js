@@ -3,6 +3,7 @@ import PersonsList from './components/PersonsList'
 import FilterContactList from './components/FilterList'
 import PersonForm from './components/PersonForm'
 import databaseFunctions from './DatabaseServices.js/dbServices'
+import Notification from './components/Notification'
 
 
 const App = () => {
@@ -10,6 +11,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [filterResultsBy, setFilterResultsBy] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccesMessage] = useState('')
 
   useEffect(() =>{
     console.log('effect')
@@ -35,6 +38,7 @@ const App = () => {
   const handleFilterChange = (event) =>{
     setFilterResultsBy(event.target.value)
   }
+  
   const addContact = (event) => {
     event.preventDefault()
 
@@ -48,7 +52,16 @@ const App = () => {
           setPersons(persons.map(person => person.id !== contactToUpdate.id ? person : response))
           setNewName("")
           setNewPhone("")
-          alert("Contact updated succesfully!")
+          setSuccesMessage(`Contact ${contactToUpdate.name} updated succesfully`)
+          setTimeout(() =>{
+            setSuccesMessage('')
+          }, 5000)
+        })
+        .catch(error =>{
+          setErrorMessage('An error occured when updating the contact')
+          setTimeout(() =>{
+            setErrorMessage('')
+          }, 5000)
         })
         
       }
@@ -65,9 +78,16 @@ const App = () => {
         setPersons(persons.concat(newContact))
         setNewName("")
         setNewPhone("")
+        setSuccesMessage(`Contact ${newContact.name} added!`)
+          setTimeout(() =>{
+            setSuccesMessage('')
+          }, 5000)
       })
       .catch(error =>{
-        alert("Could not add new contact. Please try again later!")
+        setErrorMessage('An error occured when adding the contact')
+        setTimeout(() =>{
+          setErrorMessage('')
+        }, 5000)
       })
     }
   }
@@ -92,15 +112,23 @@ const App = () => {
     .deleteContact(props.id)
     .then(response =>{
       setPersons(persons.filter(person => person.id !== props.id))
-      alert("Contact deleted succesfully!")
+      setSuccesMessage(`Contact ${props.name} deleted!`)
+          setTimeout(() =>{
+            setSuccesMessage('')
+          }, 5000)
+      })
+    .catch(error =>{
+      setErrorMessage('An error occured when deleting the contact')
+          setTimeout(() =>{
+            setErrorMessage('')
+          }, 5000)
     })
-    .catch("Something went wrong when deleting the contact. Try again later!")
     }
-    
   }
 
   return (
     <div>
+      <Notification errorMessage = {errorMessage} successMessage = {successMessage}/>
       <h2>Phonebook</h2>
       <FilterContactList filterResultsBy = {filterResultsBy} handleFilterChange = {handleFilterChange}/>
         <h2>Add a new contact</h2>
@@ -111,5 +139,6 @@ const App = () => {
     </div>
   )
 }
+
 
 export default App
