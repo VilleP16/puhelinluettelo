@@ -1,4 +1,5 @@
 {
+  "proxy": "http://localhost:3001",
   "name": "puhelinluettelo",
   "version": "0.1.0",
   "private": true,
@@ -19,6 +20,8 @@
     "eject": "react-scripts eject",
     "server": "json-server -p3001 --watch db.json"
   },
+  
+  
   "eslintConfig": {
     "extends": [
       "react-app",
